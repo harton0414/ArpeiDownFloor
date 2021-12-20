@@ -39,9 +39,19 @@ def new_floor():
     all_sprites.add(r)
     floors.add(r)
 
+# collide
+def collide_check():
+    collided_floor = pygame.sprite.spritecollide(arpei, floors, False)
+    if len(collided_floor) > 0:
+        for _ in collided_floor:
+            collide_rect = _.rect.clip(arpei)
+            deltY = collide_rect.bottom - collide_rect.top
+            arpei.rect.y -= deltY
+            arpei.supported = True
+    else:
+        arpei.supported = False
+
 # 阿沛
-
-
 class Arpei(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)  # initialize
@@ -112,7 +122,7 @@ while running:
 
     # 更新遊戲
     all_sprites.update()  # 執行所有的項目的update
-
+    collide_check()
     # show
     screen.fill(WHITE)
     all_sprites.draw(screen)  # 將sprites畫在screen上
@@ -120,3 +130,4 @@ while running:
 
 # 離開
 pygame.quit()
+exit()
