@@ -33,7 +33,7 @@ pygame.mixer.music.load(os.path.join("sound", "flogs_loop.mp3"))
 pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)  # 播放音效，-1表示無限次播放
 
-
+# floor test
 def new_floor():
     r = Floor()
     all_sprites.add(r)
