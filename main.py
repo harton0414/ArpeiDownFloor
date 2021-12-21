@@ -44,8 +44,13 @@ def collide_check():
     collided_floor = pygame.sprite.spritecollide(arpei, floors, False)
     if len(collided_floor) > 0:
         for _ in collided_floor:
-            collide_rect = _.rect.clip(arpei)
-            deltY = collide_rect.bottom - collide_rect.top
+            if arpei.rect.centerx < _.rect.left:
+                arpei.rect.right = _.rect.left
+            if arpei.rect.centerx > _.rect.right:
+                arpei.rect.left = _.rect.right
+
+            collide_rect = _.rect.clip(arpei)            
+            deltY = collide_rect.bottom - collide_rect.top            
             arpei.rect.y -= deltY
             arpei.supported = True
     else:
@@ -85,6 +90,10 @@ class Arpei(pygame.sprite.Sprite):
         else:
             self.speedy += self.gravity
         self.rect.y += self.speedy
+
+        if self.rect.y > HEIGHT:
+            self.rect.y = 0
+            self.speedy = 0            
 
 
 class Floor(pygame.sprite.Sprite):
