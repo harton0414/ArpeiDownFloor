@@ -34,12 +34,16 @@ pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)  # 播放音效，-1表示無限次播放
 
 # floor test
+
+
 def new_floor():
     r = Floor()
     all_sprites.add(r)
     floors.add(r)
 
 # collide
+
+
 def collide_check():
     collided_floor = pygame.sprite.spritecollide(arpei, floors, False)
     if len(collided_floor) > 0:
@@ -49,14 +53,16 @@ def collide_check():
             if arpei.rect.centerx > _.rect.right:
                 arpei.rect.left = _.rect.right
 
-            collide_rect = _.rect.clip(arpei)            
-            deltY = collide_rect.bottom - collide_rect.top            
+            collide_rect = _.rect.clip(arpei)
+            deltY = collide_rect.bottom - collide_rect.top
             arpei.rect.y -= deltY
             arpei.supported = True
     else:
         arpei.supported = False
 
 # 阿沛
+
+
 class Arpei(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)  # initialize
@@ -93,7 +99,7 @@ class Arpei(pygame.sprite.Sprite):
 
         if self.rect.y > HEIGHT:
             self.rect.y = 0
-            self.speedy = 0            
+            self.speedy = 0
 
 
 class Floor(pygame.sprite.Sprite):
@@ -103,22 +109,21 @@ class Floor(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()  # set rectangle
         self.rect.x = random.randrange(0, WIDTH - self.rect.width)
         self.rect.y = random.randrange(650, 700)
+        while pygame.sprite.spritecollide(self, floors, False):
+            self.rect.x = random.randrange(0, WIDTH - self.rect.width)
+            self.rect.y = random.randrange(650, 700)
         self.speedy = -5
 
     def update(self):
         self.rect.y += self.speedy
-        if self.rect.top < 0:
-            self.rect.x = random.randrange(0, WIDTH - self.rect.width)
-            self.rect.y = random.randrange(650, 900)
-            self.speedy = -5
+        if self.rect.bottom < 0:
+            self.kill()
 
 
 all_sprites = pygame.sprite.Group()  # 創建所有的sprites group
 floors = pygame.sprite.Group()
 arpei = Arpei()
 all_sprites.add(arpei)
-for i in range(4):
-    new_floor()
 
 running = True
 while running:
@@ -129,9 +134,15 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    # 新增地板
+    rand_floor = random.random()
+    if rand_floor > 0.95:
+        new_floor()
+
     # 更新遊戲
     all_sprites.update()  # 執行所有的項目的update
     collide_check()
+
     # show
     screen.fill(WHITE)
     all_sprites.draw(screen)  # 將sprites畫在screen上
