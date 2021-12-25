@@ -63,6 +63,30 @@ def collide_check():
     else:
         arpei.supported = False
 
+
+class Text(pygame.sprite.Sprite):
+    def __init__(self, text, size, color, width, height):
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
+
+        self.font = pygame.font.SysFont("Arial", size)
+        self.textSurf = self.font.render(text, 1, color)
+        self.image = pygame.Surface((width, height))
+        W = self.textSurf.get_width()
+        H = self.textSurf.get_height()
+        self.image.blit(self.textSurf, [width/2 - W/2, height/2 - H/2])
+        self.rect = self.textSurf.get_rect()
+
+
+score = 0
+
+
+class Score(Text):
+    def __init__(self):
+        Text.__init__(self, str(score), 32, pygame.color.Color(255, 0, 0), 100, 40)
+    def update(self):
+        Text.__init__(self, str(score), 32, pygame.color.Color(255, 0, 0), 100, 40)        
+
 # 阿沛
 
 
@@ -127,6 +151,8 @@ all_sprites = pygame.sprite.Group()  # 創建所有的sprites group
 floors = pygame.sprite.Group()
 arpei = Arpei()
 all_sprites.add(arpei)
+sc = Score()
+all_sprites.add(sc)
 
 running = True
 floor_i = 0
@@ -146,6 +172,7 @@ while running:
         floor_i = 0
 
     # 更新遊戲
+    score+=1
     all_sprites.update()  # 執行所有的項目的update
     collide_check()
 
